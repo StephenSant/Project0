@@ -14,16 +14,25 @@ $(document).ready(function()
 
     let gameOver = false;
 
+    let draw = false;
+
     const endGame = function ()
     {
-        console.log(playersTurn + ' wins.');
-        if(playersTurn === 'X')
+        if(draw === true)        
         {
-            document.getElementById('leftBoard').style.visibility = 'visible'; //Jquery not here be cause I'm an idiot still learning
+            $('#leftBoard').html('<p style = "margin-top: 95px;"><span style="font-size: 100px;">Draw</span></p>');
+            $('#rightBoard').html('<p style = "margin-top: 95px;"><span style="font-size: 100px;">Draw</span></p>');
         }
         else
         {
-            document.getElementById('rightBoard').style.visibility = 'visible'; //Jquery not here be cause I'm an idiot still learning
+            if(playersTurn === 'X')
+            {
+                $('#leftBoard').html('<p>WINNER<br><span style="font-size: 125px;">X</span></p>');
+            }
+            else
+            {
+                $('#rightBoard').html('<p>WINNER<br><span style="font-size: 125px;">O</span></p>');
+            }
         }
         gameOver = true;
     }
@@ -60,7 +69,7 @@ $(document).ready(function()
         {
             endGame();
         }
-        
+
         //Diagonal wins
         if(positions[0] === positions[4] && positions[4] === positions[8] && positions[0] !== 'e')
         {
@@ -70,7 +79,21 @@ $(document).ready(function()
         {
             endGame();
         }
+
+        for (let i = 0; i < positions.length; i++) //If there's empty positions, then we can still play.
+        {
+            if(positions[i] === "e")
+            {
+                return;
+            }    
+        }
         
+        //If we can't make any more moves, then it's a draw.
+        if(gameOver !== true)
+        {
+            draw = true;
+        }
+        endGame();
     }
 
     const checkIfValid = function(position)
@@ -83,7 +106,6 @@ $(document).ready(function()
         }
         else
         {
-            console.log("You can't do that!");
             return false;
         }
     }
@@ -111,9 +133,20 @@ $(document).ready(function()
                 }
             }
         }
-        else
+    }
+
+    //Reset button
+    document.getElementById("resetButton").onclick = function()
+    {
+        for (let i = 0; i < positions.length; i++) 
         {
-            console.log("Game over, we're done here.");
+            positions[i] = 'e';
+            document.getElementById(i).innerHTML = "<p> </p>";
         }
+        $('#leftBoard').html('<p> </p>');
+        $('#rightBoard').html('<p> </p>');
+        playersTurn = 'X';
+        draw = false;
+        gameOver = false;
     }
 });

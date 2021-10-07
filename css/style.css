@@ -26,7 +26,6 @@ div.board
 }
 div.grid
 {
-    margin: auto;
     height: 100%;
     display: grid;
     justify-content: center;
@@ -55,11 +54,13 @@ div.cell
     text-align: center;
     font-size: 50px;
 }
-#rightBoard
+#resetButton
 {
-    visibility: hidden;
+    font-size: 25px;
 }
-#leftBoard
-{
-    visibility: hidden;
+.underBoard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
 }
