@@ -16,6 +16,12 @@ $(document).ready(function()
 
     let draw = false;
 
+    //this makes all of the cells in the grid clickable
+    for (let i = 0; i < document.getElementsByClassName("cell").length; i++) 
+    {
+        document.getElementsByClassName("cell")[i].onclick = function(){turn(document.getElementsByClassName("cell")[i].id)};//Jquery not here be cause I'm an idiot still learning
+    }
+
     const endGame = function ()
     {
         if(draw === true)        
@@ -96,9 +102,9 @@ $(document).ready(function()
         endGame();
     }
 
-    const checkIfValid = function(position)
+    const checkIfValid = function(position) //This does what it says on the box 
     {
-        if(positions[position] !== "X" && positions[position] !== "O")
+        if(positions[position] !== "X" && positions[position] !== "O")//Is there an X or O in the cell.
         {
             positions[position] = playersTurn;
             document.getElementById(position).innerHTML = "<p>"+playersTurn+"</p>"; //Jquery not here be cause I'm an idiot still learning
@@ -106,22 +112,17 @@ $(document).ready(function()
         }
         else
         {
-            return false;
+            return false;//Invalid placement
         }
-    }
-
-    for (let i = 0; i < document.getElementsByClassName("cell").length; i++) 
-    {
-        document.getElementsByClassName("cell")[i].onclick = function(){turn(document.getElementsByClassName("cell")[i].id)};//Jquery not here be cause I'm an idiot still learning
     }
     
     const turn = function(position) 
     {
-        if(gameOver === false)
+        if(gameOver === false)//If the game is still going.
         {
-            checkIfValid(position);
-            checkForWinning();
-            if(gameOver === false)
+            checkIfValid(position);//Can you choose this position?
+            checkForWinning();//Have you won?
+            if(gameOver === false)//If you haven't won then give the other player the chalk
             {
                 if(playersTurn === "X")
                 {
@@ -138,15 +139,15 @@ $(document).ready(function()
     //Reset button
     document.getElementById("resetButton").onclick = function()
     {
-        for (let i = 0; i < positions.length; i++) 
+        for (let i = 0; i < positions.length; i++) //clears the board
         {
             positions[i] = 'e';
             document.getElementById(i).innerHTML = "<p> </p>";
         }
-        $('#leftBoard').html('<p> </p>');
+        $('#leftBoard').html('<p> </p>');//clear the sides of the board
         $('#rightBoard').html('<p> </p>');
-        playersTurn = 'X';
-        draw = false;
+        playersTurn = 'X';//X goes first
+        draw = false;//Put things back where I found it.
         gameOver = false;
     }
 });
