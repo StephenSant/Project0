@@ -11,16 +11,13 @@ $(document).ready(function()
                      'e','e','e'];
     
     let playersTurn = 'X'; //either X or O (Could have been a bool)
+    let playerWinner = 'null';
 
     let gameOver = false;
 
     let draw = false;
 
-    //this makes all of the cells in the grid clickable
-    for (let i = 0; i < document.getElementsByClassName("cell").length; i++) 
-    {
-        document.getElementsByClassName("cell")[i].onclick = function(){turn(document.getElementsByClassName("cell")[i].id)};//Jquery not here be cause I'm an idiot still learning
-    }
+    
 
     const endGame = function ()
     {
@@ -31,16 +28,33 @@ $(document).ready(function()
         }
         else
         {
-            if(playersTurn === 'X')
+            if(playerWinner === 'X')
             {
-                $('#leftBoard').html('<p>WINNER<br><span style="font-size: 125px;">X</span></p>');
+                writeOnSideBoards('left','<p>WINNER<br><span style="font-size: 125px;">X</span></p>')
             }
             else
             {
-                $('#rightBoard').html('<p>WINNER<br><span style="font-size: 125px;">O</span></p>');
+                writeOnSideBoards('right','<p>WINNER<br><span style="font-size: 125px;">O</span></p>');
             }
         }
         gameOver = true;
+    }
+
+    const writeOnSideBoards = function(whichBoard, whatToWrite)
+    {
+        if(whichBoard === 'right')
+        {
+            $('#rightBoard').html(whatToWrite);
+        }
+        else if (whichBoard === 'left')
+        {
+            $('#leftBoard').html(whatToWrite);
+        }
+        else
+        {
+            $('#rightBoard').html(whatToWrite);
+            $('#leftBoard').html(whatToWrite);
+        }
     }
 
     const checkForWinning = function ()
@@ -51,46 +65,62 @@ $(document).ready(function()
         //Horizontal wins
         if(positions[0] === positions[1] && positions[1] === positions[2] && positions[0] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
         if(positions[3] === positions[4] && positions[4] === positions[5] && positions[3] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
         if(positions[6] === positions[7] && positions[7] === positions[8] && positions[6] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
 
         //Vertical wins
         if(positions[0] === positions[3] && positions[3] === positions[6] && positions[0] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
         if(positions[1] === positions[4] && positions[4] === positions[7] && positions[1] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
         if(positions[2] === positions[5] && positions[5] === positions[8] && positions[2] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
 
         //Diagonal wins
         if(positions[0] === positions[4] && positions[4] === positions[8] && positions[0] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
         if(positions[2] === positions[4] && positions[4] === positions[6] && positions[2] !== 'e')
         {
+            playerWinner = playersTurn;
             endGame();
+            return true;
         }
 
         for (let i = 0; i < positions.length; i++) //If there's empty positions, then we can still play.
         {
             if(positions[i] === "e")
             {
-                return;
+                return false;
             }    
         }
         
@@ -98,8 +128,10 @@ $(document).ready(function()
         if(gameOver !== true)
         {
             draw = true;
+            endGame();
+            return true;
         }
-        endGame();
+        
     }
 
     const checkIfValid = function(position) //This does what it says on the box 
@@ -117,37 +149,52 @@ $(document).ready(function()
     }
     
     const turn = function(position) 
-    {
-        if(gameOver === false)//If the game is still going.
+    { 
+        if(gameOver === false && checkIfValid(position))//If you haven't won then give the other player the chalk
         {
-            checkIfValid(position);//Can you choose this position?
-            checkForWinning();//Have you won?
-            if(gameOver === false)//If you haven't won then give the other player the chalk
+            if(playersTurn === "X")
             {
-                if(playersTurn === "X")
+                if(checkForWinning() === false)
                 {
                     playersTurn = "O";
+                    writeOnSideBoards('right',`<p>It's you'r turn<br><span style="font-size: 125px;">O</span></p>`);
+                    writeOnSideBoards('left','<p> </p>');
                 }
-                else
+            }
+            else
+            {
+                if(checkForWinning() === false)
                 {
                     playersTurn = "X";
+                    writeOnSideBoards('left', `<p>It's you'r turn<br><span style="font-size: 125px;">X</span></p>`);
+                    writeOnSideBoards('right','<p> </p>');
                 }
             }
         }
     }
 
-    //Reset button
-    document.getElementById("resetButton").onclick = function()
+    const newGame = function()
     {
         for (let i = 0; i < positions.length; i++) //clears the board
         {
             positions[i] = 'e';
             document.getElementById(i).innerHTML = "<p> </p>";
         }
-        $('#leftBoard').html('<p> </p>');//clear the sides of the board
-        $('#rightBoard').html('<p> </p>');
+        writeOnSideBoards('both','<p> </p>'); //clear the sides of the board
+        playerWinner = 'null';
         playersTurn = 'X';//X goes first
+        writeOnSideBoards('left', `<p>It's you'r turn<br><span style="font-size: 125px;">X</span></p>`);//Need a proper function for this 
         draw = false;//Put things back where I found it.
         gameOver = false;
+    }
+    
+    newGame();
+
+    //Reset button
+    document.getElementById("resetButton").onclick = function(){newGame()};
+    //this makes all of the cells in the grid clickable
+    for (let i = 0; i < document.getElementsByClassName("cell").length; i++) 
+    {
+        document.getElementsByClassName("cell")[i].onclick = function(){turn(document.getElementsByClassName("cell")[i].id)};//Jquery not here be cause I'm an idiot still learning
     }
 });
