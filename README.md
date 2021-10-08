@@ -1,6 +1,6 @@
 # Project0 - TicTacToe
 
-***Version 1.0.0***
+***Version 1.1.0***
 
 ## General Info
 This is the first of the General Assembly projects, which was made in a week. This site has a game of Tic-Tac-Toe (also known as Norts and Crosses). 
